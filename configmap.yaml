@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+data:
+  db_host: mysql-service # Place your MySQL service name here
+  db_name: my_database  # Replace with your actual database name
+
