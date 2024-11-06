@@ -1,1 +1,113 @@
-# k8s_php_mysql
+Kubernetes PHP and MySQL Deployment
+This project demonstrates deploying a PHP application with a MySQL backend on a local Kubernetes (K8s) cluster, which includes one master and two worker (slave) nodes. The setup uses Kubernetes resources to manage the deployment of PHP and MySQL containers, along with persistent storage for MySQL data.
+
+Table of Contents
+Project Overview
+Prerequisites
+Setup and Installation
+Deployment Steps
+Verifying the Deployment
+Project Structure
+Troubleshooting
+License
+Project Overview
+This project is a basic setup of a PHP application with a MySQL database, managed on a local Kubernetes cluster. The PHP container connects to the MySQL database service, allowing you to deploy a full LAMP-like stack within your Kubernetes environment.
+
+Key Features:
+PHP Application: Serves a simple application connecting to MySQL.
+MySQL Database: Managed with Persistent Volume (PV) and Persistent Volume Claim (PVC) for data persistence.
+Multi-node Compatibility: Designed to run on a Kubernetes cluster with a master and multiple worker nodes.
+ConfigMaps for Configuration: Uses ConfigMaps to pass environment variables and initialization data to MySQL and PHP containers.
+Internal Networking: Uses Kubernetes Services to allow the PHP app to communicate with MySQL within the cluster.
+Prerequisites
+Before starting, ensure you have the following:
+
+Kubernetes Cluster: A local Kubernetes cluster with at least 1 master and 2 worker nodes.
+Tools like Minikube or kind can help create a local cluster, or you may use a more advanced setup with tools like kubeadm.
+kubectl: The Kubernetes command-line tool installed and configured to interact with your local cluster.
+Docker: To build custom Docker images if needed.
+Persistent Storage on Worker Nodes: Ensure /var/lib/mysql is created on each worker node to hold the MySQL data.
+Setup and Installation
+Clone the Repository:
+
+bash
+Copy code
+git clone https://github.com/gkutsarov/k8s_php_mysql.git
+cd k8s_php_mysql
+Ensure MySQL Storage Path:
+
+SSH into each worker node and create the directory /var/lib/mysql to store MySQL data.
+bash
+Copy code
+ssh worker-node-1
+sudo mkdir -p /var/lib/mysql
+Edit Configuration Files (optional):
+
+Customize any YAML files if specific values need modification for your environment (e.g., MySQL username, password, or PHP application specifics).
+Deployment Steps
+To deploy the PHP and MySQL services to the Kubernetes cluster, follow the order below:
+
+ConfigMaps:
+
+Create the ConfigMap for MySQL initialization and configuration data. These provide essential environment variables and scripts for the MySQL and PHP deployments.
+bash
+Copy code
+kubectl apply -f configmap-mysql-init.yaml
+kubectl apply -f configmap.yaml
+Persistent Volume (PV) and Persistent Volume Claim (PVC):
+
+Create the Persistent Volume and Persistent Volume Claim for the MySQL database to ensure data persists across pod restarts.
+bash
+Copy code
+kubectl apply -f mysql-pv.yaml
+kubectl apply -f mysql-pvc.yaml
+MySQL Service:
+
+Deploy the mysql-service to allow the PHP application to connect to MySQL by an internal DNS name.
+bash
+Copy code
+kubectl apply -f mysql-service.yaml
+MySQL Deployment:
+
+Deploy the MySQL database, which will use the PVC for persistent storage and the configmap-mysql-init.yaml ConfigMap for initialization data.
+bash
+Copy code
+kubectl apply -f mysql-deployment.yaml
+PHP Application Service:
+
+Deploy the php-app-service to expose the PHP application within the cluster and, if needed, externally.
+bash
+Copy code
+kubectl apply -f php-app-service.yaml
+PHP Application Deployment:
+
+Deploy the PHP application, which connects to the MySQL service using the mysql-service DNS name and uses configmap.yaml for configuration data.
+bash
+Copy code
+kubectl apply -f php-deployment.yaml
+Verifying the Deployment
+Check Pod Status:
+
+Run kubectl get pods to ensure all pods are running without issues.
+View Logs:
+
+Use kubectl logs <pod-name> to view logs for debugging any potential issues, especially useful for the PHP application or MySQL connection errors.
+Access PHP Application:
+
+If the PHP service is exposed via a LoadBalancer or NodePort, access the application by navigating to http://<Node_IP>:<NodePort> in a browser.
+Verify that the PHP application can successfully communicate with the MySQL database.
+Project Structure
+Here’s a breakdown of the key files in this repository:
+
+configmap-mysql-init.yaml: ConfigMap for MySQL initialization data, such as scripts or environment variables.
+configmap.yaml: General ConfigMap for the PHP application configuration.
+mysql-pv.yaml: Defines the Persistent Volume for MySQL data storage.
+mysql-pvc.yaml: Defines the Persistent Volume Claim, linking MySQL to the PV.
+mysql-deployment.yaml: Defines the MySQL deployment.
+mysql-service.yaml: Defines the Service for MySQL, allowing internal communication for the PHP application.
+php-deployment.yaml: Defines the PHP application deployment.
+php-app-service.yaml: Defines the Service for the PHP application, allowing internal and/or external access.
+Troubleshooting
+Storage Permission Issues: If MySQL encounters permission issues, check the /var/lib/mysql directory permissions on each node and ensure Kubernetes has the correct permissions to access it.
+Connection Errors: If the PHP application can’t connect to MySQL, double-check the mysql-service.yaml and php-deployment.yaml configurations for consistent service names and environment variables (e.g., MySQL host, username, password).
+Pod Failures: Use kubectl describe pod <pod-name> to view detailed information on any failing pods for specific error messages.
