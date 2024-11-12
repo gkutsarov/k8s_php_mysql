@@ -113,7 +113,7 @@ kubectl apply -f node-port.yaml
 
 Access the application by navigating to [http://<Node_IP>:<NodePort>]
 
-# HELM CHART
+# Helm Chart
 
 HELM simplifies managing complex Kubernetes applications by allowing you to packag, configure, deploy and upgrade applications consistently.
 
