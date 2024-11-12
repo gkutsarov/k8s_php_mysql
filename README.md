@@ -111,7 +111,26 @@ kubectl apply -f php-deployment.yaml
 kubectl apply -f node-port.yaml
 ```
 
-Access the application by navigating to http://<Node_IP>:<NodePort>
+Access the application by navigating to [http://<Node_IP>:<NodePort>]
+
+# HELM CHART
+
+HELM simplifies managing complex Kubernetes applications by allowing you to packag, configure, deploy and upgrade applications consistently.
+
+In this project (not so complex) I have used HELM to create two environments **dev** and **prod** each in separate namespace and to run on specific nodes.
+
+First we need to create the K8S namespaces
+```bash
+kubectl create namespace php-prod
+kubectl create namespace php-dev
+```
+
+Then we can proceed to install both HELM charts using different value files.
+```bash
+helm install php-prod php-mysql-chart/ --values php-mysql-chart/values-prod.yaml --namespace=php-prod
+helm install php-dev php-mysql-chart/ --values php-mysql-chart/values-dev.yaml --namespace=php-dev
+```
+
 
 # Verifying the Deployment
 
