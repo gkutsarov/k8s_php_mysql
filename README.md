@@ -111,7 +111,7 @@ kubectl apply -f php-deployment.yaml
 kubectl apply -f node-port.yaml
 ```
 
-Access the application by navigating to [http://<Node_IP>:<NodePort>]
+Access the application by navigating to `http://<Node_IP>:<NodePort>`
 
 # Helm Chart
 
