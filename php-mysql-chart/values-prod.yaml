@@ -1,0 +1,13 @@
+app:
+  name: php-mysql-app
+ 
+nodeName: node1 # Change to your node name
+
+pv:
+  name: mysql-pv-prod
+
+pvc:
+  name: mysql-pvc-prod
+
+nodePort:
+  http: 30082 # Custom nodePort for prod environment
