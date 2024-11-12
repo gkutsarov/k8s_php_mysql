@@ -131,6 +131,11 @@ helm install php-prod php-mysql-chart/ --values php-mysql-chart/values-prod.yaml
 helm install php-dev php-mysql-chart/ --values php-mysql-chart/values-dev.yaml --namespace=php-dev
 ```
 
+![Nodes](images/nodes.png)
+![Helm All Namespaces](images/helm-all-namespaces.png)
+![PHP Dev Helm](images/php-dev-helm-pods.png)
+![PHP Prod Helm](images/php-prod-helm-pods.png)
+
 
 # Verifying the Deployment
 
